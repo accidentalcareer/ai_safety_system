@@ -1,0 +1,7 @@
+# ML pipeline dependencies (in addition to the app's requirements.txt)
+pandas>=2.2
+numpy>=1.26
+scikit-learn>=1.5
+xgboost==3.4.1
+matplotlib==3.11.2
+joblib>=1.3

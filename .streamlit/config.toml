@@ -1,0 +1,44 @@
+# AEGISCARE AI – global Streamlit theme.
+# Colour values mirror the design tokens in ui/theme.py; keep the two in sync.
+
+[theme]
+base = "light"
+primaryColor = "#2459C9"
+backgroundColor = "#F5F7FA"
+secondaryBackgroundColor = "#EEF2F7"
+textColor = "#0B1F3A"
+linkColor = "#2459C9"
+linkUnderline = false
+borderColor = "#E3E8EF"
+showWidgetBorder = true
+showSidebarBorder = true
+
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+codeFont = "JetBrains Mono:https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+baseFontSize = 15
+headingFontSizes = ["1.6rem", "1.3rem", "1.1rem", "1rem", "0.95rem", "0.9rem"]
+headingFontWeights = [650, 600, 600, 600, 600, 600]
+metricValueFontSize = "1.6rem"
+metricValueFontWeight = 600
+
+baseRadius = "10px"
+buttonRadius = "8px"
+
+# Green / yellow / red are reserved for risk states.
+blueColor = "#2459C9"
+greenColor = "#16803C"
+yellowColor = "#B7791F"
+redColor = "#C53030"
+
+dataframeBorderColor = "#E3E8EF"
+dataframeHeaderBackgroundColor = "#F1F4F8"
+dataframeHeaderTextColor = "#3D4B5F"
+
+chartCategoricalColors = ["#2459C9", "#0F8B8D", "#7A5AC7", "#C2662D", "#5B6B7F"]
+
+[theme.sidebar]
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F1F4F8"
+
+[client]
+toolbarMode = "minimal"
