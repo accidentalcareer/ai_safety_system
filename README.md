@@ -1,173 +1,406 @@
-# Integrated AI Safety Systems in Healthcare – Demo
+# AEGISCARE AI
+### Integrated AI-Driven Healthcare Safety and ICU Risk Assessment System
 
-A local Streamlit demonstration built for a college project.
+[![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Framework-Streamlit-red.svg)](https://streamlit.io/)
+[![Machine Learning](https://img.shields.io/badge/ML-Scikit--learn-orange.svg)](https://scikit-learn.org/)
+[![Status](https://img.shields.io/badge/Status-Academic%20Prototype-green.svg)]()
 
-> ⚠️ **All data in this app is synthetic.** The three patients, their medications,
-> vital signs and lab results are invented. The app is an educational demo, is not a
-> medical device, and must not be used for clinical decisions.
+**AEGISCARE AI** is an integrated healthcare safety demonstration system designed to support patient monitoring, medication interaction checking, ICU risk assessment, and patient-state simulation.
 
-## Milestone status
+The system combines rule-based safety checks, a trained machine learning model, synthetic patient data, and interactive visualisations within a unified Streamlit application.
 
-| Module | Status |
+It demonstrates how different computational approaches can be integrated into a healthcare-oriented software system.
+
+---
+
+## 1. Project Overview
+
+Healthcare environments involve continuous patient monitoring, medication management, clinical data interpretation, and timely identification of potential risks.
+
+AEGISCARE AI addresses these areas through four interconnected modules:
+
+1. **Drug Interaction Checker:** Identifies potential medication interactions using a documented rule-based interaction database.
+2. **Deterioration Prediction:** Demonstrates patient deterioration monitoring through simulated risk scoring and vital-sign analysis.
+3. **ICU Risk Assessment:** Uses a trained Logistic Regression model to generate an ICU mortality risk score from clinical measurements.
+4. **Patient Digital Twin:** Simulates patient-state changes and demonstrates how changes in clinical parameters can influence system responses.
+
+The application also provides a central dashboard for viewing patient information, vital signs, trends, and safety-related information.
+
+## 2. Key Features
+
+| Module | Functionality |
 |---|---|
-| 🩺 Patient Dashboard | ✅ Implemented |
-| 💊 Drug Interaction Checker | ✅ Implemented (milestone 2) |
-| 📉 Deterioration Prediction | ✅ Implemented in **simulated demonstration mode** (milestone 3) |
-| 🧬 Patient Digital Twin | ✅ Implemented – integrates the modules above on a simulated patient copy |
+| Patient Dashboard | Patient overview, vital signs, safety indicators and trends |
+| Drug Interaction Checker | Medication interaction identification, severity information and source references |
+| Deterioration Prediction | Simulated deterioration scoring and vital-sign monitoring |
+| ICU Risk Assessment | Machine learning-based ICU mortality risk scoring |
+| Patient Digital Twin | Interactive patient-state simulation and reassessment |
+| Data Visualisation | Charts, clinical trends and model evaluation visualisations |
 
-The **Patient Dashboard** includes:
+### 2.1 Drug Interaction Checker
 
-- A sidebar patient selector with 3 synthetic patients (`SYN-001`, `SYN-002`, `SYN-003`)
-- Patient details: age, sex, ward, admission date, diagnoses, allergies
-- Latest vital signs (BP, heart rate, SpO₂, respiratory rate, temperature) with change since the previous reading
-- Interactive Plotly trend charts with a 24 / 48 / 72-hour window and a choice of vitals
-- Current medication list
-- Laboratory results with a plain Low / Normal / High range check
+The Drug Interaction Checker evaluates selected medications against a documented interaction database.
 
-The "typical range" bands and Low/High labels are **simple comparisons against
-illustrative adult reference ranges**. They are not predictions or clinical interpretations.
+Key capabilities:
+- Identifies known drug combinations.
+- Displays interaction information and associated risks.
+- Uses patient context where supported by the documented rules.
+- Handles unknown medication names.
+- Identifies duplicate medication entries.
 
-## Drug Interaction Checker
+**Implementation:** Rule-based interaction checking. This module does not use a trained machine learning model.
 
-- Checks the selected patient's medication list against a **small teaching sample of 9
-  documented interaction rules** (`data/drug_interaction_rules.py`). Each rule cites the
-  official product labelling it comes from (US FDA labels on DailyMed, an EU SmPC, and an
-  FDA science paper).
-- Each match shows the drug pair, the type of concern, a plain-language explanation, the
-  evidence source, and relevant recorded patient values (e.g. INR, potassium). These values
-  are shown for context only and are not interpreted.
-- Every result is labelled **📘 Documented rule**. This module contains no machine-learning
-  predictions.
-- Unknown drug names, duplicates (including aliases such as Albuterol = Salbutamol), blank
-  entries and empty lists are reported instead of causing errors.
-- **No rule found does not mean safe.** The sample covers only a few pairs, is not clinically
-  validated and does not recommend any medication change.
+### 2.2 Deterioration Prediction
 
-## Deterioration Prediction (simulated demonstration mode)
+This module demonstrates patient deterioration monitoring using synthetic patient data and simulated scoring.
 
-**Why there is no trained model.** A supervised scikit-learn model needs *labelled* data:
-observations plus a recorded outcome. The synthetic records have no outcome labels, so nothing
-could be learned or evaluated. Making up labels from a rule and training on them would only teach
-the model to copy that rule, so no model is trained. `labeled_data_check()` in
-`utils/deterioration.py` makes this decision in code and the page explains it.
+Key capabilities:
+- Vital-sign monitoring.
+- Deterioration score visualisation.
+- Risk-contributor analysis.
+- Simulated patient-state reassessment.
 
-**What the page shows**
+**Implementation:** Simulated scoring, not a trained predictive model.
 
-- Vital-sign trend charts (BP, heart rate, SpO₂, respiratory rate, temperature) with a 24/48/72 h window
-- Lab results plotted relative to their own reference ranges
-- A **🧪 Simulated demonstration score** with a chart and table of contributing factors
-- Missing-data and invalid-input warnings, the number of inputs available, and the score over time
-- A "what-if" panel to edit the latest readings or remove readings (for demos only)
-- A limitations section
+### 2.3 ICU Risk Assessment
 
-**How the demo score is calculated** (deliberately simple and transparent):
+This module integrates a trained Logistic Regression model developed using the eICU Collaborative Research Database demo dataset.
 
-1. *Outside range*: how far the latest value is outside its range, in multiples of the range width
-   (inside the range = 0). Vitals use the dashboard's illustrative ranges; labs use their own
-   reference range from the record.
-2. *Worsening*: how much that distance grew over the last 24 h (vital signs only).
-3. Each part is capped at 1. Points = outside range + worsening. Score = sum of all points.
+The model uses aggregated clinical measurements and patient information to generate an uncalibrated ICU mortality risk score.
 
-The ranges, equal weights and caps are teaching choices, not validated thresholds. The score
-**is not a probability or a clinical prediction**, and no Low/High risk band is shown because
-no validated cut-off exists. Missing inputs add no points, so incomplete data lowers the score.
+Key capabilities:
+- Patient profile and ICU stay information.
+- Vital-sign and laboratory input.
+- Clinical input validation.
+- Feature aggregation and preprocessing.
+- Model-based risk scoring.
+- Data completeness assessment.
+- Model evaluation information.
 
-**What a real trained model would need** (future work, if labelled data were added):
-- *Target*: a binary label per observation time, e.g. "an agreed deterioration event (such as ICU
-  transfer) occurred within the next 24 hours", stored as `deterioration_outcome`.
-- *Model*: a baseline such as scikit-learn `LogisticRegression` on the same features
-  (latest values and 24 h changes), with imputation and scaling in a `Pipeline`.
-- *Evaluation*: split by **patient** (not by row) so that no patient appears in both
-  training and test data, then report AUROC, precision/recall and a calibration plot
-  on the held-out patients.
+The feature adapter converts human-readable clinical inputs into the 126 features expected by the trained model.
 
-## Patient Digital Twin
+**Important:** The output is an uncalibrated model risk score, not a probability of death or a clinical diagnosis.
 
-An editable, **simulated** copy of the selected synthetic patient that re-runs the existing
-modules after each change. Logic: `utils/digital_twin.py` (no Streamlit code). Page:
-`views/digital_twin.py`.
+### 2.4 Patient Digital Twin
 
-| Change | Drug Interaction Checker (📘 documented rule) | Deterioration score (🧪 simulated) |
-|---|---|---|
-| Add / remove a medication | Re-run | **Not recomputed** – marked *Needs reassessment*, because the score has no medication inputs (`USES_MEDICATION_DATA = False`) |
-| Change a vital sign (latest reading) | Re-run **only** if a matched rule lists that vital as context (e.g. Sertraline + Sumatriptan → heart rate) | Recomputed |
-| Change a lab value | Re-run **only** if a matched rule lists that lab as context (e.g. Warfarin + Aspirin → INR) | Recomputed only for the `DEMO_LABS` it uses |
+The Patient Digital Twin demonstrates how changes in patient parameters can influence the system's simulated response.
 
-- Interaction rules match on drug **names** only; context values are refreshed for display but never
-  change which rules match.
-- Every change adds one timeline event: time, patient ID, change type, previous → new value, modules
-  reassessed and why, resulting status, and output source. No output is labelled as an evaluated
-  model because the project has none.
-- Each patient has its own twin in Streamlit session state. Changes run in button callbacks, so a
-  normal rerun never logs an event twice. **Reset** restores the original sample values and keeps
-  the timeline.
-- Invalid input (blank or duplicate medication names, non-numeric or implausible values, unknown
-  tests) is rejected with a message and leaves the state unchanged. Unknown medication names are
-  added but reported as *not checked*.
-- The other pages always show the original synthetic record.
+Key capabilities:
+- Patient-state modification.
+- Vital-sign changes.
+- Medication changes.
+- Reassessment of relevant system modules.
+- Patient-state reset and timeline visualisation.
 
-## Project structure
+The Digital Twin is a demonstration module and does not independently use the trained ICU mortality model.
 
+---
+
+## 3. Machine Learning Methodology
+
+The ICU Risk Assessment module uses supervised machine learning to estimate ICU mortality risk.
+
+### 3.1 Dataset
+
+The model was developed using the eICU Collaborative Research Database demo dataset.
+
+| Dataset characteristic | Value |
+|---|---:|
+| Total ICU stays | 1,838 |
+| Alive outcomes | 1,747 |
+| Expired outcomes | 91 |
+| Training samples | 1,470 |
+| Testing samples | 368 |
+| Model input features | 126 |
+
+The dataset contains an imbalanced distribution of outcomes, with substantially fewer expired cases than alive cases.
+
+The train-test split was performed by patient identifier to prevent the same patient from appearing in both training and testing sets.
+
+### 3.2 Data Preprocessing
+
+The preprocessing pipeline includes:
+
+- Clinical data cleaning.
+- Vital-sign aggregation.
+- Laboratory measurement aggregation.
+- Missing-value handling.
+- Feature engineering.
+- Categorical variable encoding.
+- Constant-feature removal.
+- Feature scaling.
+
+The model uses measurements from the initial observation window rather than complete ICU stay information.
+
+### 3.3 Models Evaluated
+
+Three classification algorithms were evaluated:
+
+| Model | Purpose |
+|---|---|
+| Logistic Regression | Linear classification baseline |
+| Random Forest | Ensemble of decision trees |
+| XGBoost | Gradient-boosted decision trees |
+
+Logistic Regression was selected using the predefined cross-validation model-selection procedure.
+
+### 3.4 Model Performance
+
+The following results were obtained on the held-out test dataset.
+
+| Model | ROC-AUC | PR-AUC | Recall | F1 |
+|---|---:|---:|---:|---:|
+| Logistic Regression | 0.813 | 0.306 | 0.389 | 0.350 |
+| Random Forest | 0.855 | 0.352 | 0.444 | 0.327 |
+| XGBoost | 0.845 | 0.476 | 0.444 | 0.381 |
+
+**Evaluation interpretation:**
+
+- ROC-AUC measures the model's ability to distinguish between the two outcome classes.
+- PR-AUC evaluates the precision-recall trade-off and is particularly relevant for imbalanced datasets.
+- Recall measures the proportion of expired cases correctly identified.
+- F1-score combines precision and recall.
+
+Logistic Regression was retained as the selected model based on the predefined cross-validation selection procedure, rather than selecting a model using the held-out test results.
+
+---
+
+## 4. System Architecture
+
+AEGISCARE AI follows a modular application architecture.
+
+### Application Layers
+
+1. **Presentation Layer:** Streamlit interface, navigation, dashboards and interactive forms.
+2. **Application Layer:** Patient management, medication interaction checking, deterioration simulation and Digital Twin operations.
+3. **Machine Learning Layer:** Data preprocessing, feature adaptation, model inference and evaluation.
+4. **Data Layer:** Synthetic patient information, medication interaction rules, model artefacts and supporting datasets.
+
+### Data Flow
+
+```text
+             USER INPUT
+                 |
+                 v
+        STREAMLIT APPLICATION
+                 |
+        +--------+--------+
+        |        |        |
+        v        v        v
+     Patient   Drug     Patient
+    Dashboard  Checker   Simulation
+        |        |        |
+        |        v        |
+        |   Rule-Based    |
+        |   Validation   |
+        |                 |
+        +--------+--------+
+                 |
+                 v
+          ICU RISK MODULE
+                 |
+                 v
+         FEATURE ADAPTER
+                 |
+                 v
+       PREPROCESSING PIPELINE
+                 |
+                 v
+       LOGISTIC REGRESSION
+                 |
+                 v
+          RISK SCORE
+                 |
+                 v
+       RESULT VISUALISATION
 ```
-healthcare_safety_app/
-├── app.py                      # Entry point: page setup, sidebar navigation, patient selector
-├── data/
-│   ├── synthetic_patients.py   # Synthetic patients, vitals generator, labs, reference ranges
-│   └── drug_interaction_rules.py # Sample interaction rules with evidence sources
-├── utils/
-│   ├── charts.py               # Plotly chart helpers
-│   ├── drug_interactions.py    # Interaction checking logic (no Streamlit code)
-│   ├── deterioration.py        # Demo score: validation, preprocessing, scoring (no Streamlit code)
-│   └── digital_twin.py         # Digital twin state, change workflows, timeline (no Streamlit code)
-├── views/
-│   ├── dashboard.py            # Patient Dashboard page
-│   ├── drug_interactions.py    # Drug Interaction Checker page
-│   ├── deterioration.py        # Deterioration Prediction page (simulated mode)
-│   └── digital_twin.py         # Patient Digital Twin page
-├── tests/
-│   ├── test_synthetic_data.py  # Unit tests for the data module
-│   ├── test_drug_interactions.py # Unit tests for the interaction checker
-│   ├── test_deterioration.py   # Unit tests for the demo score
-│   ├── test_digital_twin.py    # Unit tests for the twin workflows
-│   ├── test_digital_twin_app.py # Headless tests of the Digital Twin page
-│   └── test_app.py             # Headless smoke tests of the Streamlit app
+
+The ICU mortality model operates independently of the simulated deterioration scoring module.
+
+---
+
+## 5. Technology Stack
+
+| Technology | Application |
+|---|---|
+| Python | Core programming language |
+| Streamlit | Interactive web application |
+| Pandas | Data manipulation and preprocessing |
+| NumPy | Numerical operations |
+| Scikit-learn | Machine learning and evaluation |
+| XGBoost | Model comparison |
+| Matplotlib | Evaluation plots |
+| Plotly | Interactive visualisations |
+| Pytest | Automated testing |
+| Git and GitHub | Version control and source management |
+
+---
+
+## 6. Project Structure
+
+```text
+ai_safety_system/
+│
+├── app.py
+├── README.md
 ├── requirements.txt
-└── pytest.ini
+├── pytest.ini
+│
+├── data/
+│   ├── drug_interaction_rules.py
+│   └── synthetic_patients.py
+│
+├── ml/
+│   ├── data_audit.py
+│   ├── preprocessing.py
+│   ├── train.py
+│   ├── evaluate.py
+│   ├── inference.py
+│   ├── feature_adapter.py
+│   │
+│   ├── models/
+│   │   ├── aegiscare_mortality_model.pkl
+│   │   └── model_metadata.json
+│   │
+│   └── results/
+│       ├── metrics.csv
+│       ├── roc_curve.png
+│       ├── pr_curve.png
+│       └── confusion_matrix_best.png
+│
+├── tests/
+│
+├── ui/
+│   └── styles.py
+│
+├── utils/
+│
+└── views/
+    ├── dashboard.py
+    ├── drug_interactions.py
+    ├── deterioration.py
+    ├── digital_twin.py
+    └── icu_risk.py
 ```
 
-## Installation (Windows)
+**Dataset note:** The original eICU data and processed patient-level training CSV files are excluded from this repository. Access to the authorised dataset is required to reproduce model training.
 
-Requires Python 3.10 or newer. Open PowerShell in this folder, then run:
+---
 
-```powershell
+## 7. Installation and Execution
+
+### Prerequisites
+
+- Python version compatible with the dependencies in `requirements.txt`.
+- Git.
+- A terminal or command prompt.
+
+### Step 1: Clone the repository
+
+```bash
+git clone https://github.com/accidentaltacareer/ai_safety_system.git
+```
+
+### Step 2: Navigate into the project
+
+```bash
+cd ai_safety_system
+```
+
+### Step 3: Create a virtual environment
+
+```bash
 python -m venv .venv
-.venv\Scripts\Activate.ps1
+```
+
+### Step 4: Activate the environment
+
+**Windows:**
+
+```cmd
+.venv\Scripts\activate
+```
+
+### Step 5: Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-If PowerShell blocks the activation script, run this once and try again:
-`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+### Step 6: Launch the application
 
-macOS / Linux: use `source .venv/bin/activate` instead of the second line.
-
-## Run the app
-
-```powershell
+```bash
 streamlit run app.py
 ```
 
-Your browser opens at <http://localhost:8501>. Press `Ctrl+C` in the terminal to stop the app.
+The application will open in your browser, normally at:
 
-## Run the tests
+```text
+http://localhost:8501
+```
 
-```powershell
+---
+
+## 8. Testing
+
+The project includes automated tests for application functionality, model inference and feature adaptation.
+
+Run the application tests:
+
+```bash
 python -m pytest
 ```
 
-## How the synthetic data is made
+Run the machine learning tests explicitly:
 
-Each patient has a start value, end value, and noise level for every vital sign
-(see `PATIENTS` in `data/synthetic_patients.py`). The generator draws a straight line
-from start to end over 72 hours (one reading every 2 hours) and adds random noise
-from a fixed seed, so the numbers are identical on every run. To change a patient,
-edit their profile in that file.
+```bash
+python -m pytest ml
+```
+
+The ML tests are invoked separately because the project's pytest configuration restricts default test discovery to the `tests/` directory.
+
+---
+
+## 9. Limitations
+
+AEGISCARE AI is an academic proof-of-concept system. Its current limitations include:
+
+- The system uses synthetic patient records for demonstration purposes.
+- The deterioration prediction module uses simulated scoring rather than a trained predictive model.
+- Drug interaction checking depends on the documented interaction rules and available medication information.
+- The ICU mortality model was trained using the eICU demo dataset and has not undergone external clinical validation.
+- The ICU mortality model's output is uncalibrated and must not be interpreted as a probability.
+- The held-out test set contains only 18 expired cases, limiting the reliability of model comparisons.
+- Model performance is weaker for ICU stays shorter than the initial 24-hour observation window.
+- The system is not integrated with a live hospital information system or electronic health record platform.
+
+---
+
+## 10. Disclaimer
+
+AEGISCARE AI is developed exclusively for academic, educational and demonstration purposes.
+
+It is not a certified medical device, clinical decision-support system or substitute for professional medical judgement.
+
+The system must not be used to diagnose patients, determine treatment plans, prescribe medication or make real-world clinical decisions.
+
+All risk scores, simulated responses and medication interaction outputs should be interpreted within the limitations of the underlying demonstration data and implementation.
+
+---
+
+## 11. Project Information
+
+**Project:** AEGISCARE AI – Integrated AI-Driven Healthcare Safety System
+
+**Repository:** [ai_safety_system](https://github.com/accidentaltacareer/ai_safety_system)
+
+**Development:** Academic engineering project
+
+**Primary Domain:** Healthcare Technology, Artificial Intelligence and Machine Learning
+
+**Purpose:** Demonstration of integrated healthcare safety modules using rule-based systems, machine learning and interactive patient simulation.
+
+---
+
+*Developed as an academic project exploring the integration of artificial intelligence, machine learning and software engineering in healthcare safety applications.*
